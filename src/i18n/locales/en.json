@@ -1,0 +1,142 @@
+{
+    "common": {
+        "goodMorning": "Good Morning",
+        "teaLover": "Tea Lover",
+        "save": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "loading": "Loading...",
+        "unknown": "Unknown"
+    },
+    "nav": {
+        "home": "Home",
+        "journal": "Journal",
+        "cellar": "Cellar",
+        "profile": "Profile"
+    },
+    "dashboard": {
+        "lastBrewed": "Last Brewed",
+        "readyToBrew": "Ready to Brew?",
+        "startJourney": "Start your journey",
+        "pickTea": "Pick a tea from your cellar",
+        "browseCellar": "Browse Cellar",
+        "totalBrews": "Total Brews",
+        "collection": "Collection",
+        "teas": "teas",
+        "recentLogs": "Recent Logs",
+        "viewAll": "View All",
+        "noActivity": "No recent activity."
+    },
+    "stats": {
+        "inventoryDistribution": "Tea Types",
+        "weeklyActivity": "Brewing Activity",
+        "last7Days": "Last 7 Days",
+        "last30Days": "Last 30 Days",
+        "allTime": "All Time",
+        "totalConsumed": "Total Tea Consumed"
+    },
+    "inventory": {
+        "title": "My Cellar",
+        "searchPlaceholder": "Search your collection...",
+        "noTeas": "No teas found.",
+        "addTitle": "Add New Tea",
+        "saveToCellar": "Save to Cellar",
+        "fields": {
+            "name": "Tea Name",
+            "type": "Type",
+            "origin": "Origin",
+            "vendor": "Vendor",
+            "stock": "Stock (g)",
+            "date": "Purchase Date",
+            "notes": "Notes"
+        },
+        "placeholders": {
+            "name": "e.g. Da Hong Pao",
+            "origin": "e.g. Fujian",
+            "vendor": "e.g. Essence of Tea",
+            "stock": "50",
+            "notes": "Tasting notes, brewing tips..."
+        }
+    },
+    "journal": {
+        "title": "Brewing Journal",
+        "newBrew": "New Brew",
+        "noLogs": "No brews logged yet.",
+        "startBrewing": "Start brewing to build your journal.",
+        "selectTea": "Select Tea",
+        "chooseTea": "Choose a tea...",
+        "timer": "Brew Timer",
+        "timerHint": "Timer runs independently. Log time manually below if needed.",
+        "logBrew": "Log Brew",
+        "fields": {
+            "temp": "Temp (°C)",
+            "time": "Time (s)",
+            "amount": "Amount (g)",
+            "rating": "Rating",
+            "notes": "Tasting Notes"
+        },
+        "placeholders": {
+            "notes": "Floral, Woody, Sweet..."
+        },
+        "newBrewTitle": "New Brew Log",
+        "brewDate": "Brew Date",
+        "brewTime": "Brew Time",
+        "brewNotes": "Brew Notes"
+    },
+    "teaTypes": {
+        "Green": "Green",
+        "Black": "Black",
+        "Oolong": "Oolong",
+        "White": "White",
+        "Puerh": "Puerh",
+        "Herbal": "Herbal",
+        "Yellow": "Yellow"
+    },
+    "profile": {
+        "settings": "Settings",
+        "language": "Language / 语言",
+        "cloudSync": "Cloud Sync",
+        "lastSync": "Last synced",
+        "notSynced": "Not synced yet",
+        "syncing": "Syncing...",
+        "syncNow": "Sync Now",
+        "deviceId": "Device ID",
+        "deviceIdDescription": "Your unique device identifier for cloud sync. Save this to sync across devices.",
+        "deviceIdCopied": "Device ID copied to clipboard!",
+        "loggedIn": "Logged in",
+        "dataBackup": "Data Backup",
+        "backupDescription": "Export your data to a JSON file for backup or transfer to another device.",
+        "exportData": "Export Data",
+        "importData": "Import Data",
+        "exporting": "Exporting...",
+        "importing": "Importing...",
+        "exportSuccess": "Data exported successfully!",
+        "exportError": "Failed to export data. Please try again.",
+        "importSuccess": "Data imported successfully! Page will reload.",
+        "importError": "Failed to import data. Please check the file format.",
+        "backupNote": "Backup files include all teas, brew logs, and images."
+    },
+    "auth": {
+        "login": "Login",
+        "signUp": "Sign Up",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "welcomeBack": "Welcome back!",
+        "createAccount": "Create your account",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "loginError": "Invalid email or password",
+        "signupError": "Failed to create account",
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "loggingIn": "Logging in...",
+        "creatingAccount": "Creating account...",
+        "accountCreated": "Account created successfully!",
+        "redirecting": "Redirecting to your dashboard...",
+        "secureLogin": "Your data is encrypted and secure",
+        "termsNotice": "By signing up, you agree to our Terms of Service",
+        "passwordHint": "At least 6 characters",
+        "logout": "Logout"
+    }
+}

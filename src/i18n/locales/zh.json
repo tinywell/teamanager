@@ -1,0 +1,138 @@
+{
+    "common": {
+        "goodMorning": "早上好",
+        "teaLover": "爱茶人",
+        "save": "保存",
+        "cancel": "取消",
+        "back": "返回",
+        "loading": "加载中...",
+        "unknown": "未知"
+    },
+    "nav": {
+        "home": "首页",
+        "journal": "茶志",
+        "cellar": "茶窖",
+        "profile": "我的"
+    },
+    "dashboard": {
+        "lastBrewed": "最近冲泡",
+        "readyToBrew": "准备好喝茶了吗？",
+        "startJourney": "开启你的茶旅",
+        "pickTea": "从茶窖中选一款茶",
+        "browseCellar": "浏览茶窖",
+        "totalBrews": "累计冲泡",
+        "collection": "藏茶",
+        "teas": "款",
+        "recentLogs": "近期记录",
+        "viewAll": "查看全部",
+        "noActivity": "暂无近期活动"
+    },
+    "stats": {
+        "inventoryDistribution": "茶类分布",
+        "weeklyActivity": "冲泡活动",
+        "last7Days": "最近7天",
+        "last30Days": "最近30天",
+        "allTime": "全部时间",
+        "totalConsumed": "总饮茶量"
+    },
+    "inventory": {
+        "title": "我的茶窖",
+        "searchPlaceholder": "搜索你的藏茶...",
+        "noTeas": "未找到茶叶",
+        "addTitle": "添加新茶",
+        "saveToCellar": "存入茶窖",
+        "fields": {
+            "name": "茶名",
+            "type": "茶类",
+            "origin": "产地",
+            "vendor": "茶庄/品牌",
+            "stock": "存量 (g)",
+            "date": "购入日期",
+            "notes": "备注"
+        },
+        "placeholders": {
+            "name": "例如：大红袍",
+            "origin": "例如：福建武夷山",
+            "vendor": "例如：xx茶庄",
+            "stock": "50",
+            "notes": "风味描述，冲泡建议..."
+        }
+    },
+    "journal": {
+        "title": "品茗日志",
+        "newBrew": "新冲泡",
+        "noLogs": "暂无冲泡记录",
+        "startBrewing": "开始冲泡，记录你的茶生活",
+        "selectTea": "选择茶叶",
+        "chooseTea": "请选择...",
+        "timer": "冲泡计时",
+        "timerHint": "计时器独立运行。如需记录，请在下方手动填入时间。",
+        "logBrew": "记录冲泡",
+        "fields": {
+            "temp": "水温 (°C)",
+            "time": "时间 (秒)",
+            "amount": "投茶量 (g)",
+            "rating": "评分",
+            "notes": "品鉴笔记"
+        },
+        "placeholders": {
+            "notes": "花香、木质、甜味..."
+        }
+    },
+    "teaTypes": {
+        "Green": "绿茶",
+        "Black": "红茶",
+        "Oolong": "乌龙茶",
+        "White": "白茶",
+        "Puerh": "普洱",
+        "Herbal": "花草茶",
+        "Yellow": "黄茶"
+    },
+    "profile": {
+        "settings": "设置",
+        "language": "Language / 语言",
+        "cloudSync": "云同步",
+        "lastSync": "上次同步",
+        "notSynced": "尚未同步",
+        "syncing": "同步中...",
+        "syncNow": "立即同步",
+        "deviceId": "设备 ID",
+        "deviceIdDescription": "你的唯一设备标识符，用于云同步。保存此 ID 以在多设备间同步数据。",
+        "deviceIdCopied": "设备 ID 已复制到剪贴板！",
+        "loggedIn": "已登录",
+        "dataBackup": "数据备份",
+        "backupDescription": "将数据导出为 JSON 文件，用于备份或转移到其他设备。",
+        "exportData": "导出数据",
+        "importData": "导入数据",
+        "exporting": "导出中...",
+        "importing": "导入中...",
+        "exportSuccess": "数据导出成功！",
+        "exportError": "导出失败，请重试。",
+        "importSuccess": "数据导入成功！页面将重新加载。",
+        "importError": "导入失败，请检查文件格式。",
+        "backupNote": "备份文件包含所有茶叶、冲泡记录和图片。"
+    },
+    "auth": {
+        "login": "登录",
+        "signUp": "注册",
+        "email": "邮箱",
+        "password": "密码",
+        "confirmPassword": "确认密码",
+        "welcomeBack": "欢迎回来！",
+        "createAccount": "创建你的账号",
+        "noAccount": "还没有账号？",
+        "hasAccount": "已有账号？",
+        "loginError": "邮箱或密码错误",
+        "signupError": "创建账号失败",
+        "passwordMismatch": "两次密码不一致",
+        "passwordTooShort": "密码至少需要 6 个字符",
+        "loggingIn": "登录中...",
+        "creatingAccount": "创建账号中...",
+        "accountCreated": "账号创建成功！",
+        "redirecting": "正在跳转到你的主页...",
+        "secureLogin": "你的数据已加密并安全存储",
+        "termsNotice": "注册即表示你同意我们的服务条款",
+        "passwordHint": "至少 6 个字符",
+        "logout": "退出登录"
+    }
+}
