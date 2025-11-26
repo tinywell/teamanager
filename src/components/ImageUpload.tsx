@@ -1,15 +1,29 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { set } from 'idb-keyval';
 
 interface ImageUploadProps {
     onImageSelected: (blobId: string) => void;
+    currentImageId?: string;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, currentImageId }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Load initial image if provided
+    useEffect(() => {
+        if (currentImageId) {
+            import('idb-keyval').then(({ get }) => {
+                get(currentImageId).then((blob) => {
+                    if (blob) {
+                        setPreview(URL.createObjectURL(blob));
+                    }
+                });
+            });
+        }
+    }, [currentImageId]);
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -67,6 +81,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
     const clearImage = () => {
         setPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
+        onImageSelected(''); // Notify parent of removal
     };
 
     return (
@@ -85,6 +100,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
                     <button
                         onClick={clearImage}
                         className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                        type="button"
                     >
                         <X size={16} />
                     </button>
@@ -97,6 +113,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
             ) : (
                 <button
                     onClick={() => fileInputRef.current?.click()}
+                    type="button"
                     className="w-full h-32 border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center text-stone-400 hover:border-tea-400 hover:text-tea-500 transition-colors bg-stone-50"
                 >
                     <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center mb-2">

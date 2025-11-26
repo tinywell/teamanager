@@ -8,6 +8,8 @@ export const useTeas = () => {
     const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
 
+    const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+
     // Check auth status
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -53,6 +55,7 @@ export const useTeas = () => {
             }));
 
             setTeas(mappedTeas);
+            setLastSyncTime(new Date());
         } catch (err: any) {
             console.error('Error fetching teas:', err);
             setError(err.message);
@@ -148,5 +151,16 @@ export const useTeas = () => {
         }
     };
 
-    return { teas, loading, error, addTea, updateTea, deleteTea, refreshTeas: fetchTeas };
+    return {
+        teas,
+        loading,
+        error,
+        addTea,
+        updateTea,
+        deleteTea,
+        refreshTeas: fetchTeas,
+        isSyncing: loading,
+        lastSyncTime,
+        syncNow: fetchTeas
+    };
 };
