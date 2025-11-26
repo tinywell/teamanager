@@ -7,8 +7,10 @@ export interface Tea {
     origin: string;
     harvestYear?: number;
     vendor?: string;
-    stockWeight: number; // in grams
+    stockWeight: number; // in grams (Current Balance)
+    initialWeight?: number; // in grams (Original weight)
     purchaseDate: string;
+    price?: number; // Purchase price
     rating: number;
     notes: string;
     imageUrl?: string; // kept for backward compatibility or external URLs

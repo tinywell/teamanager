@@ -1,17 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Tea } from '../types';
-import { syncTeasToCloud, fetchTeasFromCloud, deleteTeaFromCloud } from '../utils/cloudSync';
 import { supabase } from '../lib/supabase';
 
-const STORAGE_KEY = 'teas';
-
 export const useTeas = () => {
-    const [teas, setTeas] = useState<Tea[]>(() => {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    });
-    const [isSyncing, setIsSyncing] = useState(false);
-    const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+    const [teas, setTeas] = useState<Tea[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
 
     // Check auth status
@@ -27,92 +21,132 @@ export const useTeas = () => {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Load from cloud on mount (if authenticated)
+    const fetchTeas = useCallback(async () => {
+        if (!user) {
+            setTeas([]);
+            setLoading(false);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('teas')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            const mappedTeas: Tea[] = (data || []).map(row => ({
+                id: row.id,
+                name: row.name,
+                type: row.type,
+                origin: row.origin,
+                stockWeight: row.stock_weight,
+                initialWeight: row.initial_weight,
+                purchaseDate: row.purchase_date,
+                price: row.price,
+                rating: row.rating,
+                notes: row.notes,
+                imageBlobId: row.image_blob_id
+            }));
+
+            setTeas(mappedTeas);
+        } catch (err: any) {
+            console.error('Error fetching teas:', err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
+    // Initial fetch
     useEffect(() => {
+        fetchTeas();
+    }, [fetchTeas]);
+
+    const addTea = async (tea: Omit<Tea, 'id'>) => {
         if (!user) return;
+        const newId = crypto.randomUUID();
 
-        const loadFromCloud = async () => {
-            try {
-                setIsSyncing(true);
-                const cloudTeas = await fetchTeasFromCloud();
+        try {
+            const { error } = await supabase
+                .from('teas')
+                .insert({
+                    id: newId,
+                    user_id: user.id,
+                    name: tea.name,
+                    type: tea.type,
+                    origin: tea.origin,
+                    stock_weight: tea.stockWeight,
+                    initial_weight: tea.initialWeight,
+                    purchase_date: tea.purchaseDate,
+                    price: tea.price,
+                    rating: tea.rating,
+                    notes: tea.notes,
+                    image_blob_id: tea.imageBlobId
+                });
 
-                if (cloudTeas.length > 0) {
-                    // Merge cloud data with local data
-                    const localTeas = teas;
-                    const mergedTeas = [...cloudTeas];
-
-                    // Add local teas that don't exist in cloud
-                    localTeas.forEach(localTea => {
-                        if (!cloudTeas.find(ct => ct.id === localTea.id)) {
-                            mergedTeas.push(localTea);
-                        }
-                    });
-
-                    setTeas(mergedTeas);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedTeas));
-
-                    // Sync local-only teas to cloud
-                    if (mergedTeas.length > cloudTeas.length) {
-                        await syncTeasToCloud(mergedTeas);
-                    }
-                }
-
-                setLastSyncTime(new Date());
-            } catch (error) {
-                console.error('Failed to load from cloud:', error);
-            } finally {
-                setIsSyncing(false);
-            }
-        };
-
-        loadFromCloud();
-    }, [user]); // Only run when user changes
-
-    // Sync to cloud whenever teas change (if authenticated)
-    useEffect(() => {
-        if (!user || teas.length === 0) return;
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(teas));
-
-        // Debounce cloud sync
-        const timer = setTimeout(() => {
-            syncTeasToCloud(teas).then(() => {
-                setLastSyncTime(new Date());
-            });
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [teas, user]);
-
-    const addTea = (tea: Omit<Tea, 'id'>) => {
-        const newTea = { ...tea, id: crypto.randomUUID() };
-        setTeas(prev => [newTea, ...prev]);
+            if (error) throw error;
+            await fetchTeas(); // Refresh list
+        } catch (err: any) {
+            console.error('Error adding tea:', err);
+            setError(err.message);
+            throw err;
+        }
     };
 
-    const updateTea = (id: string, updates: Partial<Tea>) => {
-        setTeas(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+    const updateTea = async (id: string, updates: Partial<Tea>) => {
+        if (!user) return;
+
+        try {
+            // Map frontend fields to DB columns
+            const dbUpdates: any = {};
+            if (updates.name !== undefined) dbUpdates.name = updates.name;
+            if (updates.type !== undefined) dbUpdates.type = updates.type;
+            if (updates.origin !== undefined) dbUpdates.origin = updates.origin;
+            if (updates.stockWeight !== undefined) dbUpdates.stock_weight = updates.stockWeight;
+            if (updates.initialWeight !== undefined) dbUpdates.initial_weight = updates.initialWeight;
+            if (updates.purchaseDate !== undefined) dbUpdates.purchase_date = updates.purchaseDate;
+            if (updates.price !== undefined) dbUpdates.price = updates.price;
+            if (updates.rating !== undefined) dbUpdates.rating = updates.rating;
+            if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+            if (updates.imageBlobId !== undefined) dbUpdates.image_blob_id = updates.imageBlobId;
+
+            const { error } = await supabase
+                .from('teas')
+                .update(dbUpdates)
+                .eq('id', id)
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+            await fetchTeas(); // Refresh list
+        } catch (err: any) {
+            console.error('Error updating tea:', err);
+            setError(err.message);
+            throw err;
+        }
     };
 
     const deleteTea = async (id: string) => {
-        setTeas(prev => prev.filter(t => t.id !== id));
-        if (user) {
-            await deleteTeaFromCloud(id);
-        }
-    };
-
-    const syncNow = async () => {
         if (!user) return;
 
-        setIsSyncing(true);
         try {
-            await syncTeasToCloud(teas);
-            setLastSyncTime(new Date());
-        } catch (error) {
-            console.error('Sync failed:', error);
-        } finally {
-            setIsSyncing(false);
+            const { error } = await supabase
+                .from('teas')
+                .delete()
+                .eq('id', id)
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+            await fetchTeas(); // Refresh list
+        } catch (err: any) {
+            console.error('Error deleting tea:', err);
+            setError(err.message);
+            throw err;
         }
     };
 
-    return { teas, addTea, updateTea, deleteTea, isSyncing, lastSyncTime, syncNow };
+    return { teas, loading, error, addTea, updateTea, deleteTea, refreshTeas: fetchTeas };
 };

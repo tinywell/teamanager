@@ -1,15 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { BrewLog } from '../types';
-import { syncBrewLogsToCloud, fetchBrewLogsFromCloud } from '../utils/cloudSync';
 import { supabase } from '../lib/supabase';
 
-const STORAGE_KEY = 'brewLogs';
-
 export const useBrewLogs = () => {
-    const [logs, setLogs] = useState<BrewLog[]>(() => {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    });
+    const [logs, setLogs] = useState<BrewLog[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
 
     // Check auth status
@@ -25,59 +21,75 @@ export const useBrewLogs = () => {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Load from cloud on mount (if authenticated)
+    const fetchLogs = useCallback(async () => {
+        if (!user) {
+            setLogs([]);
+            setLoading(false);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('brew_logs')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('date', { ascending: false });
+
+            if (error) throw error;
+
+            const mappedLogs: BrewLog[] = (data || []).map(row => ({
+                id: row.id,
+                teaId: row.tea_id,
+                date: row.date,
+                waterTemp: row.water_temp,
+                steepTime: row.steep_time,
+                teaAmount: row.tea_amount,
+                rating: row.rating,
+                tastingNotes: row.tasting_notes || []
+            }));
+
+            setLogs(mappedLogs);
+        } catch (err: any) {
+            console.error('Error fetching brew logs:', err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
+    // Initial fetch
     useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
+
+    const addLog = async (log: Omit<BrewLog, 'id'>) => {
         if (!user) return;
+        const newId = crypto.randomUUID();
 
-        const loadFromCloud = async () => {
-            try {
-                const cloudLogs = await fetchBrewLogsFromCloud();
+        try {
+            const { error } = await supabase
+                .from('brew_logs')
+                .insert({
+                    id: newId,
+                    user_id: user.id,
+                    tea_id: log.teaId,
+                    date: log.date,
+                    water_temp: log.waterTemp,
+                    steep_time: log.steepTime,
+                    tea_amount: log.teaAmount,
+                    rating: log.rating,
+                    tasting_notes: log.tastingNotes
+                });
 
-                if (cloudLogs.length > 0) {
-                    const localLogs = logs;
-                    const mergedLogs = [...cloudLogs];
-
-                    // Add local logs that don't exist in cloud
-                    localLogs.forEach(localLog => {
-                        if (!cloudLogs.find(cl => cl.id === localLog.id)) {
-                            mergedLogs.push(localLog);
-                        }
-                    });
-
-                    setLogs(mergedLogs);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedLogs));
-
-                    // Sync local-only logs to cloud
-                    if (mergedLogs.length > cloudLogs.length) {
-                        await syncBrewLogsToCloud(mergedLogs);
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load brew logs from cloud:', error);
-            }
-        };
-
-        loadFromCloud();
-    }, [user]); // Only run when user changes
-
-    // Sync to cloud whenever logs change (if authenticated)
-    useEffect(() => {
-        if (!user || logs.length === 0) return;
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-
-        // Debounce cloud sync
-        const timer = setTimeout(() => {
-            syncBrewLogsToCloud(logs);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [logs, user]);
-
-    const addLog = (log: Omit<BrewLog, 'id'>) => {
-        const newLog = { ...log, id: crypto.randomUUID() };
-        setLogs(prev => [newLog, ...prev]);
+            if (error) throw error;
+            await fetchLogs(); // Refresh list
+        } catch (err: any) {
+            console.error('Error adding brew log:', err);
+            setError(err.message);
+            throw err;
+        }
     };
 
-    return { logs, addLog };
+    return { logs, loading, error, addLog, refreshLogs: fetchLogs };
 };

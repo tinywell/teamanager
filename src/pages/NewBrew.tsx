@@ -12,7 +12,7 @@ const NewBrew = () => {
     const preselectedTeaId = searchParams.get('teaId');
     const { t } = useTranslation();
 
-    const { teas } = useTeas();
+    const { teas, updateTea } = useTeas();
     const { addLog } = useBrewLogs();
 
     const [formData, setFormData] = useState({
@@ -28,6 +28,7 @@ const NewBrew = () => {
         e.preventDefault();
         if (!formData.teaId) return;
 
+        // Log the brew
         addLog({
             teaId: formData.teaId,
             date: new Date().toISOString(),
@@ -37,6 +38,14 @@ const NewBrew = () => {
             rating: formData.rating,
             tastingNotes: formData.notes.split(',').map(n => n.trim()).filter(Boolean)
         });
+
+        // Update tea stock
+        const tea = teas.find(t => t.id === formData.teaId);
+        if (tea) {
+            const newWeight = Math.max(0, tea.stockWeight - formData.teaAmount);
+            updateTea(tea.id, { stockWeight: newWeight });
+        }
+
         navigate('/journal');
     };
 
