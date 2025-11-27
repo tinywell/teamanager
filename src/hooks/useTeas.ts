@@ -1,29 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Tea } from '../types';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export const useTeas = () => {
+    const { user, loading: authLoading } = useAuth();
     const [teas, setTeas] = useState<Tea[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [user, setUser] = useState<any>(null);
 
     const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
-    // Check auth status
-    useEffect(() => {
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            setUser(user);
-        });
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
-
     const fetchTeas = useCallback(async () => {
+        if (authLoading) return;
+
         if (!user) {
             setTeas([]);
             setLoading(false);
@@ -63,7 +53,7 @@ export const useTeas = () => {
         } finally {
             setLoading(false);
         }
-    }, [user]);
+    }, [user, authLoading]);
 
     // Initial fetch
     useEffect(() => {

@@ -10,26 +10,36 @@ import { clsx } from 'clsx';
 const TeaDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { teas } = useTeas();
+    const { teas, loading } = useTeas();
     const { t } = useTranslation();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const tea = teas.find(t => t.id === id);
 
     useEffect(() => {
-        if (!tea) {
+        // Only redirect if loading is complete and tea is still not found
+        if (!loading && !tea) {
             navigate('/inventory');
             return;
         }
 
-        if (tea.imageBlobId) {
+        if (tea?.imageBlobId) {
             get(tea.imageBlobId).then((blob) => {
                 if (blob) {
                     setImageUrl(URL.createObjectURL(blob));
                 }
             });
         }
-    }, [tea, navigate]);
+    }, [tea, loading, navigate]);
+
+    // Show loading state while data is being fetched
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-stone-500">Loading...</div>
+            </div>
+        );
+    }
 
     if (!tea) return null;
 
