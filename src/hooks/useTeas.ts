@@ -45,6 +45,7 @@ export const useTeas = () => {
                 name: row.name,
                 type: row.type,
                 origin: row.origin,
+                vendor: row.vendor,
                 stockWeight: row.stock_weight,
                 initialWeight: row.initial_weight,
                 purchaseDate: row.purchase_date,
@@ -82,6 +83,7 @@ export const useTeas = () => {
                     name: tea.name,
                     type: tea.type,
                     origin: tea.origin,
+                    vendor: tea.vendor,
                     stock_weight: tea.stockWeight,
                     initial_weight: tea.initialWeight,
                     purchase_date: tea.purchaseDate,
@@ -109,6 +111,7 @@ export const useTeas = () => {
             if (updates.name !== undefined) dbUpdates.name = updates.name;
             if (updates.type !== undefined) dbUpdates.type = updates.type;
             if (updates.origin !== undefined) dbUpdates.origin = updates.origin;
+            if (updates.vendor !== undefined) dbUpdates.vendor = updates.vendor;
             if (updates.stockWeight !== undefined) dbUpdates.stock_weight = updates.stockWeight;
             if (updates.initialWeight !== undefined) dbUpdates.initial_weight = updates.initialWeight;
             if (updates.purchaseDate !== undefined) dbUpdates.purchase_date = updates.purchaseDate;

@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import AddTea from './pages/AddTea';
 import EditTea from './pages/EditTea';
+import TeaDetail from './pages/TeaDetail';
 import Journal from './pages/Journal';
 import NewBrew from './pages/NewBrew';
 import Profile from './pages/Profile';
@@ -32,6 +33,7 @@ function App() {
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/inventory/new" element={<AddTea />} />
                     <Route path="/inventory/edit/:id" element={<EditTea />} />
+                    <Route path="/inventory/:id" element={<TeaDetail />} />
                     <Route path="/journal" element={<Journal />} />
                     <Route path="/journal/new" element={<NewBrew />} />
                     <Route path="/profile" element={<Profile />} />
