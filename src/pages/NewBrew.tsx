@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTeas } from '../hooks/useTeas';
 import { useBrewLogs } from '../hooks/useBrewLogs';
-import BrewTimer from '../components/BrewTimer';
+
 import { ArrowLeft, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -75,14 +75,7 @@ const NewBrew = () => {
                     </select>
                 </section>
 
-                {/* Timer */}
-                <section className="bg-white p-4 rounded-xl shadow-sm border border-stone-100">
-                    <h2 className="text-sm font-bold text-stone-700 mb-4">{t('journal.timer')}</h2>
-                    <div className="flex justify-center mb-4">
-                        <BrewTimer onComplete={(time) => setFormData(prev => ({ ...prev, steepTime: time }))} />
-                    </div>
-                    <p className="text-xs text-center text-stone-400">{t('journal.timerHint')}</p>
-                </section>
+
 
                 {/* Parameters */}
                 <section className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 space-y-4">
@@ -90,27 +83,45 @@ const NewBrew = () => {
                         <div>
                             <label className="block text-xs font-bold text-stone-500 mb-1">{t('journal.fields.temp')}</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.waterTemp}
-                                onChange={e => setFormData({ ...formData, waterTemp: Number(e.target.value) })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, waterTemp: Number(val) });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg text-center font-medium focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-stone-500 mb-1">{t('journal.fields.time')}</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.steepTime}
-                                onChange={e => setFormData({ ...formData, steepTime: Number(e.target.value) })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, steepTime: Number(val) });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg text-center font-medium focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-stone-500 mb-1">{t('journal.fields.amount')}</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.teaAmount}
-                                onChange={e => setFormData({ ...formData, teaAmount: Number(e.target.value) })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, teaAmount: Number(val) });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg text-center font-medium focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
