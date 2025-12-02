@@ -165,18 +165,30 @@ const EditTea = () => {
                         <div>
                             <label className="block text-sm font-bold text-stone-700 mb-1">Current Stock (g)</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.stockWeight}
-                                onChange={e => setFormData({ ...formData, stockWeight: e.target.value })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, stockWeight: val });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg border-none focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-stone-700 mb-1">Initial Weight (g)</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.initialWeight}
-                                onChange={e => setFormData({ ...formData, initialWeight: e.target.value })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, initialWeight: val });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg border-none focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
@@ -186,9 +198,15 @@ const EditTea = () => {
                         <div>
                             <label className="block text-sm font-bold text-stone-700 mb-1">Price (CNY)</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={formData.price}
-                                onChange={e => setFormData({ ...formData, price: e.target.value })}
+                                onChange={e => {
+                                    const val = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(val)) {
+                                        setFormData({ ...formData, price: val });
+                                    }
+                                }}
                                 className="w-full p-3 bg-stone-50 rounded-lg border-none focus:ring-2 focus:ring-tea-200 outline-none"
                             />
                         </div>
